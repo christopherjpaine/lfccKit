@@ -1,9 +1,17 @@
 
+import svgwrite
+
+svg = svgwrite.Drawing()
+
 class Region:
     _index = 0
+    
     def __init__(self):
-        Region._index += 1
         self.id = Region._index
+        Region._index += 1
+        self.vertices = list()
+        self.isEdge = False
+
 
 # Set
 
@@ -12,12 +20,16 @@ class Region:
     def setOrigin (self, origin):
         self.origin = origin
 
-    # Set region vertices
-    # take in an numpy array of coordinates and store them as a list of tuples
-    # @param vertices numpy array of coordinates that plot the edge of the region
-    def setVertices (self, vertices):
+    # Add a vertex to the region
+    def appendVertex (self, vertex):
         # convert numpy array to list of tuples
-        self.vertices = convertedVertices
+        tupleVertex = tuple(vertex)
+        self.vertices.append(tupleVertex)
+
+    def printVertices ( self ):
+        for vertex in self.vertices:
+            print('('+str(vertex[0])+','+str(vertex[1])+'),', end='')
+        print()
 
     # Set Color
     # Set the color in whichever format is taken by drawsvg
@@ -30,5 +42,6 @@ class Region:
     # Draw by adding a polyline object to the svg layer
     # @param dwg layer object
     def drawRegion (self, dwg):
-        dwg.add(svg.polyline(self.vertices, fill=self.color))
-
+        if not self.isEdge:
+            dwg.add(svg.polyline(self.vertices, fill=self.color))
+       

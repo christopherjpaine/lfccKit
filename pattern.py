@@ -15,11 +15,16 @@ import region
 xDim = 40
 yDim = 40
 # average size of region
-gridSpace = 100
+gridSpace = 150
+# Regularity as a ratio of the grid spacing
+regionRegularity = 0.5
+
 # fade diffusion
-diffusion = 0.8
+diffusion = 0.3
 # rate of fade - relative size of the fade region (1 = across full image, 0 = no fade)
 fadeRate = 0.25
+# List of colors to use in the central part of the fade
+fadeColors = ['lightgray', 'darkgrey']
 
 # Set to True to enable debug prints
 debug = False
@@ -39,8 +44,8 @@ def generatePoints(xDim, yDim, gridSpace):
     points = np.arange(xDim*yDim*2).reshape((xDim,yDim,2))
     for i in range(0,xDim):
         for j in range(0,yDim):
-            xOffset = random.gauss(0,gridSpace/6)
-            yOffset = random.gauss(0,gridSpace/6)
+            xOffset = random.gauss(0, gridSpace*regionRegularity)
+            yOffset = random.gauss(0, gridSpace*regionRegularity)
             points[i,j,:] = [x+xOffset,y+yOffset]
             y += gridSpace
         y = 0
@@ -60,7 +65,8 @@ def getFadeColor(index, maximum):
     if value <= fadeEdgeA:
         return 'black'
     elif value <= fadeEdgeB:
-        return 'grey'
+        #return 'grey'
+        return random.choice(fadeColors)
     else:
         return 'white'
 

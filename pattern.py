@@ -12,17 +12,22 @@ import region
 ### Configuration
 # TODO these should be derived from grid size and canvas size and passed in from command line
 # xy dims as number of regions
-xDim = 30
-yDim = 20 
+xDim = 40
+yDim = 40
 # average size of region
 gridSpace = 100
-# std dev for the fade probability
-fadeSigma = 1 
+# fade diffusion
+diffusion = 0.8
+# rate of fade - relative size of the fade region (1 = across full image, 0 = no fade)
+fadeRate = 0.25
+
 # Set to True to enable debug prints
 debug = False
 
 # Calculated from config
 numPoints = xDim * yDim
+fadeEdgeA = 1.5 - (1.5*fadeRate)
+fadeEdgeB = 1.5 + (1.5*fadeRate)
 
 # Given the dimensions of the grid and the spacing return a numpy array of coordinates
 # in the shape numPoints x 2
@@ -51,10 +56,10 @@ def getColor():
 
 def getFadeColor(index, maximum):
     ratio = (index/(numPoints-1))
-    value = random.gauss((ratio*3), fadeSigma)
-    if value <= 1:
+    value = random.gauss((ratio*3), diffusion)
+    if value <= fadeEdgeA:
         return 'black'
-    elif value <= 2:
+    elif value <= fadeEdgeB:
         return 'grey'
     else:
         return 'white'

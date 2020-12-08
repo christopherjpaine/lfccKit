@@ -9,15 +9,20 @@ from svgwrite import cm, mm
 # Custom region class
 import region
 
-# Configuration
-xDim = 20
-yDim = 20
-gridSpace = 50
+### Configuration
+# TODO these should be derived from grid size and canvas size and passed in from command line
+# xy dims as number of regions
+xDim = 30
+yDim = 20 
+# average size of region
+gridSpace = 100
+# std dev for the fade probability
+fadeSigma = 1 
+# Set to True to enable debug prints
+debug = False
 
-# From config
+# Calculated from config
 numPoints = xDim * yDim
-
-colors = ['black', 'black', 'darkgrey', 'none']
 
 # Given the dimensions of the grid and the spacing return a numpy array of coordinates
 # in the shape numPoints x 2
@@ -29,8 +34,8 @@ def generatePoints(xDim, yDim, gridSpace):
     points = np.arange(xDim*yDim*2).reshape((xDim,yDim,2))
     for i in range(0,xDim):
         for j in range(0,yDim):
-            xOffset = random.gauss(0,gridSpace/4)
-            yOffset = random.gauss(0,gridSpace/4)
+            xOffset = random.gauss(0,gridSpace/6)
+            yOffset = random.gauss(0,gridSpace/6)
             points[i,j,:] = [x+xOffset,y+yOffset]
             y += gridSpace
         y = 0
@@ -41,14 +46,25 @@ def generatePoints(xDim, yDim, gridSpace):
 
 
 def getColor():
+    colors = ['black', 'black', 'darkgrey', 'none']
     return random.choice(colors)
 
+def getFadeColor(index, maximum):
+    ratio = (index/(numPoints-1))
+    value = random.gauss((ratio*3), fadeSigma)
+    if value <= 1:
+        return 'black'
+    elif value <= 2:
+        return 'grey'
+    else:
+        return 'white'
 
 if __name__ == '__main__':
 
     # Generate points
     points = generatePoints(xDim, yDim, gridSpace)
-    #print(points)
+    if debug and 0:
+        print(points)
 
     # Initialise list of regions
     regionList = []
@@ -62,7 +78,7 @@ if __name__ == '__main__':
 
     # generate voronoi from numpy array of points
     vor = Voronoi(points)
-    if 1:
+    if debug and 0:
          # Voronoi gives array of all vertices (Voronoi.vertices)
         print(vor.vertices)
         # An array of regions is provided (Voronoi.regions)
@@ -70,10 +86,6 @@ if __name__ == '__main__':
         # Each region in the array is described as an array of indexes that correspond to the array of vertices
         # The order regions appear in the region array is given by a 1d array (Voronoi.point_region)
         print(vor.point_region)
-
-    # Plot voronoi for debug
-    #fig = voronoi_plot_2d(vor)
-    #    fig = voronoi_plot_2d(vor, show_vertices=False, line_colors='orange',line_width=3, line_alpha=0.6, point_size=2)
     
     # Set the region vertices
     # Iterate through pointRegion array
@@ -81,23 +93,34 @@ if __name__ == '__main__':
         regionIndex = vor.point_region[i]
         # Get correct row from region array
         regionVerticesIndexed = vor.regions[regionIndex]
-        print(i)
+        #print(i)
         # For each vertice index, append the coordinates into an array
         for vertexIndex in regionVerticesIndexed:
-            #print(vor.vertices[vertexIndex])
+            # vertexIndex of negative 1 represents an edge that goes to infinity
+            # We mark these because they cause artefacts in the drawing
             if vertexIndex == -1:
                 regionList[i].isEdge = True
             regionList[i].appendVertex(vor.vertices[vertexIndex])
-        regionList[i].printVertices()
-        regionList[i].setColor(getColor())
+
+        if debug:
+            # Print vertex coords of all regions
+            print('region ' + str(i) + 'vertices:')
+            regionList[i].printVertices()
+        
+        #regionList[i].setColor(getColor)
+        regionList[i].setColor(getFadeColor(i, numPoints))
             
     
-    #plt.show()
+    if debug and 0:
+        # Plot using matplotlib
+        fig = voronoi_plot_2d(vor, show_vertices=False, line_colors='orange',line_width=3, line_alpha=0.6, point_size=2)
+        plt.show()
 
+    # Initialise the canvas
+    # TODO Don't overwrite existing and add text to image/filename with the input params
     svg = svgwrite.Drawing('new.svg', size=('100cm', '100cm'), profile='full', debug=True)
 
-    # Iterate through all regions
-        # Assign color to each (Should do this in the init of the object)
+    # Draw all regions
     for region in regionList:
         region.drawRegion(svg)
 

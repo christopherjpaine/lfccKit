@@ -4,7 +4,11 @@ import numpy as np
 import random
 from scipy.spatial import Voronoi, voronoi_plot_2d
 import svgwrite
+import sys
+from shutil import copyfile
+from datetime import datetime
 from svgwrite import cm, mm
+
 
 # Custom region class
 import region
@@ -118,11 +122,24 @@ if __name__ == '__main__':
 
     # Initialise the canvas
     # TODO Don't overwrite existing and add text to image/filename with the input params
-    svg = svgwrite.Drawing('new.svg', size=(Config.canvasWidthPx, Config.canvasHeightPx), profile='full', debug=True)
+    svg = svgwrite.Drawing('output.svg', size=(Config.canvasWidthPx, Config.canvasHeightPx), profile='full', debug=True)
 
     # Draw all regions
     for region in regionList:
         region.drawRegion(svg)
 
     svg.save()
+
+    # Move svg and copy of configs to output folder
+
+    if len(sys.argv) > 1:
+        filename = sys.argv[1]
+    else:
+        now = datetime.now()
+        filename = now.strftime("%d%m%Y_%H%M%S")
+    
+    filename = 'outputs/' + filename
+    copyfile('output.svg', filename+'.svg')
+    copyfile('config.py', filename+'.config')
+
         

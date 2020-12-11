@@ -17,12 +17,8 @@ import region
 from config import Config
 
 # Set to True to enable debug prints
-debug = True
+debug = False
 
-
-## Fade globals TODO tidy
-# List of colors to use in the central part of the fade
-fadeColors = ['lightgray', 'darkgrey']
 # fade positions
 fadeEdgeA = 1.5 - (1.5*Config.fadeSize)
 fadeEdgeB = 1.5 + (1.5*Config.fadeSize)
@@ -55,12 +51,12 @@ def getFadeColor(index, maximum):
     ratio = (index/(maximum-1))
     value = random.gauss((ratio*3), Config.fadeDiffusion)
     if value <= fadeEdgeA:
-        return 'black'
+        return Config.colorList[0]
     elif value <= fadeEdgeB:
         #return 'grey'
-        return random.choice(fadeColors)
+        return random.choice(Config.colorList[1:-1])
     else:
-        return 'white'
+        return Config.colorList[-1]
 
 if __name__ == '__main__':
 

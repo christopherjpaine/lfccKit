@@ -131,9 +131,17 @@ if __name__ == '__main__':
     if len(sys.argv) > 1:
         filename = sys.argv[1]
     else:
-        now = datetime.now()
-        filename = now.strftime("%d%m%Y_%H%M%S")
-    
+        #now = datetime.now()
+        #filename = now.strftime("%d%m%Y_%H%M%S")
+        filename = 'size' + str(Config.regionSizePx) + '_regu' + str(Config.regionRegularity)
+        if (Config.fadeEnabled):
+            fadeString = '_fade' + str(Config.fadeSize) + '_diff' + str(Config.fadeDiffusion)
+            filename = filename + fadeString
+        sizeString = '[' + str(Config.canvasHeightPx) + 'x' + str(Config.canvasWidthPx) + ']'
+        filename = filename + sizeString
+        filename = filename.replace('.', '_')
+
+
     filename = 'outputs/' + filename
     copyfile('output.svg', filename+'.svg')
     copyfile('config.py', filename+'.config')

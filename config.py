@@ -4,17 +4,23 @@ class Config:
     ## Size and Shape of Regions
 
     # Canvas size 
-    canvasWidthPx = 5000
-    canvasHeightPx = 5000
+    canvasWidthPx = 500
+    canvasHeightPx = 500
 
     # average size of region
-    regionSizePx = 200
+    regionSizePx = 15
 
     # Regularity of region Lower = more irregular.
     # canvasSize/regionSize is the most reasonable minimum regularity otherwise the 
     # noise is larger than the canvas itself. Very regular (<1px irregularity)
     # is acheived around canvasSize*regionSize
-    regionRegularity = 0.5
+    regionRegularity = 2
+
+    # Grid Shape
+    # 1 = Square Based. With infinite regularity this will give square regions
+    # 2 = Isometric based (isometric grid but 45 degree angles instead of 30). With 
+    #       infinite regularity this will give hexagonal regions
+    gridBaseShape = 2
 
     ## Fade and Coloring
 
@@ -25,7 +31,7 @@ class Config:
     # in the fade region.
     # example input formats -> https://www.w3.org/TR/SVGColor12/#sRGBcolor
     # predef color list -> https://www.december.com/html/spec/colorsvg.html
-    colorList = ['#FFFFFF', '#808080', '#606060', '#202020']
+    colorList = ['#F0ECE6', '#5E5C5A', '#2B2827', '#0A0A0A']
 
     # Enabled Fade Coloring
     fadeEnabled = True
@@ -37,7 +43,7 @@ class Config:
     # Size of fade region relative to the size of the whole image 
     # 1 = across full image, 0 = very centre only
     # Can also be thought of as the probability of the fade colors appearing.
-    fadeSize = 0.5
+    fadeSize = 0.25
 
 
 

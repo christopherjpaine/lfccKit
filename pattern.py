@@ -37,7 +37,13 @@ def generatePoints(xDim, yDim, gridSpace, gridRegularity):
             yOffset = random.gauss(0, gridSpace/gridRegularity)
             points[i,j,:] = [x+xOffset,y+yOffset]
             y += gridSpace
-        y = 0
+        if Config.gridBaseShape == 1: # Square based
+            y = 0
+        elif Config.gridBaseShape == 2: # Isometric Based
+            if (i % 2) == 0:
+                y = 0
+            else:
+                y = gridSpace/2
         x += gridSpace
 
     points = points.reshape((xDim*yDim,2))

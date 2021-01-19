@@ -36,6 +36,9 @@ class Config:
     # Enabled Fade Coloring
     fadeEnabled = True
 
+    # Fade centre 
+    fadeCentre = 0.5
+
     # Fade diffusion, how far outside of its region do we expect to see a given color
     # From 0 to 2 seems to be the reasonable values.
     fadeDiffusion = 0.4

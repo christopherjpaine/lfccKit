@@ -20,8 +20,7 @@ from config import Config
 debug = False
 
 # fade positions
-fadeEdgeA = 1 - (1*Config.fadeSize)
-fadeEdgeB = 1 + (1*Config.fadeSize)
+fadeEdgeA = (3.0/Config.fadeCentre) - ((3.0/Config.fadeCentre)*Config.fadeSize)
 
 # Given the dimensions of the grid and the spacing return a numpy array of coordinates
 # in the shape numPoints x 2

@@ -99,6 +99,10 @@ if __name__ == '__main__':
             # We mark these because they cause artefacts in the drawing
             if vertexIndex == -1:
                 regionList[i].isEdge = True
+            elif vor.vertices[vertexIndex][0] > Config.canvasWidthPx or vor.vertices[vertexIndex][1] > Config.canvasHeightPx:
+                regionList[i].isEdge = True
+            elif vor.vertices[vertexIndex][0] < 0 or vor.vertices[vertexIndex][1] < 0:
+                regionList[i].isEdge = True
             regionList[i].appendVertex(vor.vertices[vertexIndex])
 
         if debug and 0:

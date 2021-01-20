@@ -20,7 +20,8 @@ from config import Config
 debug = False
 
 # fade positions
-fadeEdgeA = (3.0/Config.fadeCentre) - ((3.0/Config.fadeCentre)*Config.fadeSize)
+fadeEdgeA = (3.0*Config.fadeCentre) - ((3.0*Config.fadeCentre)*Config.fadeSize)
+fadeEdgeB = (3.0*Config.fadeCentre) + ((3.0*Config.fadeCentre)*Config.fadeSize)
 
 # Given the dimensions of the grid and the spacing return a numpy array of coordinates
 # in the shape numPoints x 2
@@ -49,6 +50,28 @@ def generatePoints(xDim, yDim, gridSpace, gridRegularity):
     return points
 
 
+def generateSkewedPoints(xDim, yDim, gridSpaceStart, gridSpaceEnd, gridRegularity):
+    xGridSpace = gridSpaceStart
+    yGridSpace = gridSpaceStart
+    xGridSpaceInc = (gridSpaceEnd - gridSpaceStart)/xDim
+    yGridSpaceInc = (gridSpaceEnd - gridSpaceStart)/yDim
+    x = 0
+    y = 0
+    points = np.arange(xDim*yDim*2).reshape((xDim,yDim,2))
+    for i in range(0,xDim):
+        for j in range(0,yDim):
+            xOffset = random.gauss(0, xGridSpace/gridRegularity)
+            yOffset = random.gauss(0, yGridSpace/gridRegularity)
+            points[i,j,:] = [x+xOffset,y+yOffset]
+            y += yGridSpace
+        y = 0
+        x += xGridSpace
+        xGridSpace += xGridSpaceInc
+        yGridSpace += yGridSpaceInc
+    points = points.reshape((xDim*yDim,2))
+    return points
+
+
 def getColor():
     return random.choice(Config.colorList)
 
@@ -67,6 +90,8 @@ if __name__ == '__main__':
 
     # Generate points
     points = generatePoints(Config.xNumRegions, Config.yNumRegions, Config.regionSizePx, Config.regionRegularity)
+    if Config.skewedGrid == True:
+        points = generateSkewedPoints(Config.xNumRegions, Config.yNumRegions, Config.regionSizeMinPx, Config.regionSizeMaxPx, Config.regionRegularity)
     if debug and 1:
         print(points)
 

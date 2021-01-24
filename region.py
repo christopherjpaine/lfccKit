@@ -43,7 +43,7 @@ class Region:
     # @param dwg layer object
     def drawRegion (self, dwg):
         if not self.isEdge:
-            dwg.add(svg.polyline(self.vertices, fill=self.color))
+            dwg.add(svg.polyline(self.vertices, fill=self.color, opacity=0.8, stroke=self.color, stroke_width=5, style="mix-blend-mode:multiply"))
             # shape_rendering="crispEdges" removes the lines between objects but stops anti aliasing
             # Needs a median filter really
 
